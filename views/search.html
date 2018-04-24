@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, minimal-ui">
+	<title>搜索结果页</title>
+	<link rel="stylesheet" href="/stylesheets/style.css">
+
+</head>
+<body>
+	<div class="content">
+        <div class="lists">
+            <div class="coming-box">
+                <ul class="coming">
+
+
+
+                </ul>
+            </div>
+        </div>
+	</div>
+</body>
+</html>
+<script src="/javascripts/zepto.min.js"></script>
+<script>
+    let keyword=localStorage.getItem('KEYWORD');
+    //console.log(keyword)
+    function lis(obj) {
+        return `<li >
+                 <div class="head">
+                 <a href="http://localhost:8080/vote/detail/${obj.id}"  target="_blank">
+                 <img src="${obj.head_icon}" alt="">
+                 </a>
+                 </div>
+
+                 <div class="up">
+                 <div class="vote">
+                 <span ><em>${obj.vote_times}</em>票</span>
+                 </div>
+                 <div class="btn" data-id="${obj.id}">
+                 投TA一票
+                 </div>
+                 </div>
+                 <div class="descr">
+                 <a  href="http://localhost:8080/vote/detail/${obj.id}"  target="_blank" >
+                 <div>
+                 <span>${obj.username}</span>
+                 <span>|</span>
+                 <span>编号#${obj.id}</span>
+                 </div>
+                 <p>${obj.description}</p>
+                 </a>
+                 </div>
+                 </li>`
+    }
+    $(function () {
+        let keyword = localStorage.getItem('KEYWORD');
+        $.ajax({
+            type:"get",
+            url:`/vote/index/search?content=${keyword}`,
+            success:function (data) {
+                var data=JSON.parse(data);
+                console.log(data)
+                var eles=data.data;
+                var list='';
+                for(var attr in eles){
+                    var obj=eles[attr];
+                    list+=lis(obj)
+                }
+                $(".coming").html(list);
+
+            }
+        })
+
+    })
+
+
+</script>

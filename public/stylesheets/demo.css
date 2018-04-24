@@ -1,0 +1,19 @@
+
+/*设置默认的错误提示的样式*/
+.prompot {
+    max-width: 485px;
+    clear: both;
+    margin-top: 10px;
+}
+.false {
+    color: red;
+}
+.right {
+    color: green;
+}
+input.false {
+    border: 1px solid red;
+}
+input.right {
+    border: 1px solid green;
+}

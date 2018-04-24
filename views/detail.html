@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, minimal-ui">
+	<title>个人主页</title>
+	<link rel="stylesheet" href="/stylesheets/style.css">
+	<script src="../../vote/public/javascripts/vote.js"></script>
+</head>
+<body>
+	<div class="content">
+		<div class="register_header" style="height: 200px">
+
+		</div>
+		<div class="register_content">
+			<div class="vfriend">
+				<div>
+					<span class="line"></span>
+					<span class="dot"></span>
+				</div>
+				<div>
+					已投票的好友
+				</div>
+				<div>
+					<span class="dot"></span>
+					<span class="line"></span>
+				</div>
+			</div>
+			<ul class="vflist coming">
+
+
+
+			</ul>
+		</div>
+	</div>
+</body>
+</html>
+<script src="/javascripts/jquery-1.11.3.min.js"></script>
+<script>
+    var str = window.location.href
+    var id = str.substring(str.length-1);
+    var obj={
+        personInfo:function (data) {
+          return  `<div class="personal">
+				<div class="pl">
+					<div class="head">
+						<img src="${data.data.head_icon}" alt="">
+					</div>
+					<div class="p_descr">
+						<p>${data.data.username}</p>
+						<p>编号#${data.data.id}</p>
+					</div>
+				</div>
+				<div class="pr">
+					<div class="p_descr pr_descr">
+						<p>${data.data.rank}名</p>
+						<p>${data.data.vote}票</p>
+					</div>
+				</div>
+				<div class="motto">
+					${data.data.description}
+				</div>
+				 <div class="home register">
+                    <a href="http://localhost:8080/vote/index">
+                        活动首页
+                    </a>
+			    </div>
+			</div>`
+        },
+		info:(item)=> {
+            //console.log(item)
+            return `<li>
+				    <div class="head">
+				        <a href="#"><img src="${item.head_icon}" alt=""></a>
+				    </div>
+				    <div class="up">
+				    	<div class="vote">
+				    		<span>投了${item.vote_times}票</span>
+				    	</div>
+				    </div>
+				    <div class="descr">
+				        <h3>${item.username}</h3>
+				        <p>编号#${item.id}</p>
+				    </div>
+				</li>				`
+        }
+	}
+    $.ajax({
+        url:"/vote/all/detail/data?id="+id,
+        type:"get",
+        success:function (data) {
+            var data=JSON.parse(data);
+            console.log(data)
+            var oText=obj.personInfo(data)
+          	  var number=data.data.vfriend;
+         	  var info=number.map(obj.info)
+            $(".register_header").html(oText);
+			$(".vflist").html(info);
+        }
+    })
+</script>

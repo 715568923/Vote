@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, minimal-ui">
+	<title>投票报名</title>
+	<link rel="stylesheet" href="/stylesheets/style.css">
+	<link rel="stylesheet" href="/stylesheets/demo.css">
+	<link rel="stylesheet" href="/stylesheets/dropload.css">
+</head>
+<body>
+	<div class="content">
+		<div class="register_header">
+			<div class="title tada">
+				<img src="/images/title.png" alt="">
+			</div>	
+		</div>
+		<div class="register_item">
+			<form id="demo" autocomplete="off">
+			<div class="reitems">
+				<p class="refont">姓名:</p>
+				<input type="text" class="reinput" placeholder="请填写姓名"  name="username">
+				<p class="prompot"><i class="iconfont"></i></p>
+			</div>
+
+			<div class="reitems">
+				<p class="refont">密码:</p>
+				<input type="password" class="reinput password initial_password" placeholder="数字或字母不超过10个长度" maxlength="10" name="password" id="password">
+				<p class="prompot"><i class="iconfont"></i></p>
+			</div>
+
+			<div class="reitems">
+				<p class="refont">确认密码:</p>
+				<input type="password" class="reinput password confirm_password" placeholder="数字或字母不超过10个长度" maxlength="10" name="password2">
+				<p class="prompot"><i class="iconfont"></i></p>
+			</div>
+
+			<div class="reitems">
+				<p class="refont">手机号码:</p>
+				<input type="text" class="reinput" placeholder="请填写正确格式的手机号码" name="mobile">
+				<p class="prompot"><i class="iconfont"></i></p>
+				</div>
+
+			<div class="reitems">
+				<p class="refont">自我描述:</p>
+				<input type="text" class="reinput" placeholder="请填写自我描述（20字以内）" maxlength="20" name="description" >
+				<p class="prompot"><i class="iconfont"></i></p>
+			</div>
+
+			<div class="reitems">
+				<p class="refont">性别:</p>
+				<div class="gender">
+					<div>
+						<input type="radio" name="gender" checked value="boy" /><span>男</span>
+					</div>
+				  	<div>
+				  		<input type="radio" name="gender" value="girl"/><span>女</span>
+				  	</div>
+				</div>
+				<p class="prompot"><i class="iconfont"></i></p>
+			</div>
+
+			<div style="text-align: center">
+				<button class="rebtn">提交</button>
+			</div>
+			</form>
+		</div>
+
+	</div>
+	<div class="mask">
+		<div class="submit_info">
+			<div class="no_signed">
+
+			</div>
+
+		</div>
+	</div>
+</body>
+<script src="/javascripts/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/javascripts/validate-1.14.0.min.js"></script>
+<script src="/javascripts/demo.js"></script>
+
+</html>
+<script>
+	//$('.mask ').show()
+
+</script>

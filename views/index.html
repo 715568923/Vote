@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, minimal-ui">
+	<title>投票首页</title>
+
+    <link rel="stylesheet" href="/stylesheets/dropload.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <style>
+        .error{color: red; margin-top: 10px;}
+    </style>
+
+</head>
+<body>
+	<div class="content">
+		<div class="header">
+      <div class="sign_in">
+        <span>用户登入</span>
+      </div>
+			<div class="rule">
+        <a href="http://localhost:8080/vote/rule">
+          <span>活动规则</span>
+        </a>
+			</div>
+			<div class="title tada">
+				<img src="/images/title.png" alt="">
+			</div>	
+			<div class="register">
+          <a href="http://localhost:8080/vote/register" target="_blank">
+             我要报名
+          </a>
+			</div>
+			<div class="search">
+				<input type="text" placeholder="请输入用户名称">
+				<span>搜索</span>
+			</div>
+		</div>
+        <div class="lists">
+            <div class="coming-box "id="wrapper">
+                <ul class="coming">
+
+
+                </ul>
+            </div>
+        </div>
+	</div>
+  <div class="mask">
+    <div class="submit_info">
+      <div class="no_signed">
+          <form>
+            <div class="sub_title">
+              <span>请输入用户信息进行验证</span>
+            </div>
+            <div class="reitems">
+              <input type="text" class="reinput usernum" placeholder="请填写用户编号" name="id">
+            </div>
+            <div class="reitems">
+              <input type="text" class="reinput user_password" placeholder="请填写用户密码"name="password">
+            </div>
+            <div class="subbtn">
+              提交
+            </div>
+          </form>
+        <div class="no_info">
+          <a href="/vote/register">
+            <span>没有用户名和编号？</span>
+            <span>请先进行报名</span>
+          </a>
+        </div>
+      </div>
+        <div class="signed">
+            <p>Welcome!</p>
+            <p class="username">鸣人</p>
+            <div class="dropout">
+                退出登入
+            </div>
+        </div>
+    </div>
+  </div>
+
+</body>
+</html>
+<script src="/javascripts/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/dropload.js"></script>
+<!--<script src="/javascripts/voto.js"></script>-->
+<script>
+    function lis(obj) {
+        return `<li >
+                 <div class="head">
+                 <a href="http://localhost:8080/vote/detail/${obj.id}"  target="_blank">
+                 <img src="${obj.head_icon}" alt="">
+                 </a>
+                 </div>
+
+                 <div class="up">
+                 <div class="vote">
+                 <span ><em>${obj.vote_times}</em>票</span>
+                 </div>
+                 <div class="btn" data-id="${obj.id}">
+                 投TA一票
+                 </div>
+                 </div>
+                 <div class="descr">
+                 <a  href="http://localhost:8080/vote/detail/${obj.id}"  target="_blank" >
+                 <div>
+                 <span>${obj.username}</span>
+                 <span>|</span>
+                 <span>编号#${obj.id}</span>
+                 </div>
+                 <p>${obj.description}</p>
+                 </a>
+                 </div>
+                 </li>`
+    }
+
+    //首页 初次加载列表页
+    var offset = 0;
+    const MESSAGES='MESSAGES';
+    const KEYWORD='KEYWORD';
+    $.ajax({
+        type:'GET',
+        url:'/vote/index/data?limit=10&offset='+offset,
+        success:function (result) {
+           var object=JSON.parse(result);
+            var elements=object;
+            if(elements.errno==0){
+                var arrays=elements.data.objects;
+              // console.log(elements)
+                var list='';
+                for(var attr in arrays){
+                    var obj=arrays[attr];
+                 list+=lis(obj)
+                }
+                 $('.coming').html(list)
+            }
+        }
+    })
+//上拉加载数据
+    loadObj = {
+        callback: function(load){
+            $.ajax({
+                url:'/vote/index/data?limit=10&offset='+offset,
+                type: 'GET',
+                success: function(result) {
+                    var object=JSON.parse(result);
+                    var elements=object;
+                    //console.log(elements)
+                    var total=elements.data.total;
+                    offset+=10;
+                    if (offset < total) {
+                        if(elements.errno==0){
+                            var arrays=elements.data.objects;
+                            var result='';
+                            for(var attr in arrays){
+                                var obj=arrays[attr]
+                                result+=lis(obj)
+                            }
+
+                        }
+                        /*延时是为了更好的演示效果*/
+                        setTimeout(function(){
+                            $('.coming').append(result);
+                            load.reset();
+                        }, 1000)
+                    }else {
+
+                        load.complete();
+                        /*延时是为了更好的演示效果*/
+                        setTimeout(function(){
+                            load.reset();
+                        }, 1000)
+                    }
+
+                }
+            })
+        }
+    }
+    loadMore(loadObj);
+$(".sign_in span").on("click",function () {
+   $(".mask").show();
+});
+$('.mask').click(function(event){
+    //console.log(event)
+    if($(event.target).hasClass('mask')){
+       $(this).hide();
+    }
+});
+ //从storage中获取用户对象
+ function getUser() {
+     let messageStr=localStorage.getItem(MESSAGES);
+     let messages=messageStr?JSON.parse(messageStr):null;
+     return messages;
+ }
+ //向storage中写入用户对象
+function setUser(user){
+    localStorage.setItem(MESSAGES,JSON.stringify(user))
+}
+//从storage清除
+function delUser() {
+    localStorage.removeItem(MESSAGES);
+}
+//用户登入
+$("form").on("click",".subbtn",function () {
+    var data=$(this).parents("form").serialize();
+    $.ajax({
+        type:'POST',
+        url:"/vote/index/info",
+        data:data,
+        success: function(data) {
+            var data=JSON.parse(data);
+            console.log(data)
+            if(data.errno==0){
+               /* var id=`${data.id}`;
+                var username=`${data.user.username}`;
+                var objs={id,username};
+                location.reload(true);*/
+                setUser(data.user);
+            }else if(data.errno==-1){
+                $('.subbtn').prev().append(`<div class="error">${data.msg}</div>`);
+                if($(".error").length>1){
+                    $(".error").not(':first').remove()
+                }
+            }
+        }
+    })
+})
+ // 初始加载看是否已登录
+ function login() {
+     let user =getUser();
+     if(user){
+         $('.sign_in span').html('已登入');
+         $('.register a').html('个人主页');
+         $('.register a').attr('href',`http://localhost:8080/vote/detail/${user.id}`);
+         $('.no_signed').hide();
+         $('.username').html(user.username);
+         $('.dropout').click(function () {
+             delUser();
+             location.reload();
+         });
+     }
+ }
+ login();
+//搜索页
+    $(".search span").on("click",function () {
+        let keyword = $('.search input').val();
+        location = `/vote/search`;
+        localStorage.setItem(KEYWORD,keyword);
+
+    });
+//投票
+    $(function () {
+        $('.coming').on('click',".btn",function(event) {
+            let $element = $(event.target);
+            var user=getUser();
+            if(user){
+                var voterId=user.id;
+                let voteId = $element.data('id');
+               //console.log(voteId);
+                $.ajax({
+                    url:`/vote/index/poll?id=${voteId}&voterId=${voterId}`,
+                    type:"get",
+                    success:function (data) {
+                        var data=JSON.parse(data)
+                        console.log(data)
+                        if(data.errno==0){
+                            var voteEle=$element.siblings('.vote').css("color","red").children('span');
+                            voteEle.text(parseInt(voteEle.text())+1+'票')
+                        }else{
+                            alert(data.msg);
+                        }
+
+                    }
+                })
+            }else{
+                alert("请先登录")
+            }
+
+        });
+    })
+
+
+</script>
+
+
